@@ -1,0 +1,11 @@
+C:\Users\Атамырат\Downloads\pthread\KompilatoriLab1\KompilatoriLab1\bin\Debug\KompilatoriLab1.exe.config
+C:\Users\Атамырат\Downloads\pthread\KompilatoriLab1\KompilatoriLab1\bin\Debug\KompilatoriLab1.exe
+C:\Users\Атамырат\Downloads\pthread\KompilatoriLab1\KompilatoriLab1\bin\Debug\KompilatoriLab1.pdb
+C:\Users\Атамырат\Downloads\pthread\KompilatoriLab1\KompilatoriLab1\obj\Debug\KompilatoriLab1.csproj.AssemblyReference.cache
+C:\Users\Атамырат\Downloads\pthread\KompilatoriLab1\KompilatoriLab1\obj\Debug\KompilatoriLab1.Form1.resources
+C:\Users\Атамырат\Downloads\pthread\KompilatoriLab1\KompilatoriLab1\obj\Debug\KompilatoriLab1.Properties.Resources.resources
+C:\Users\Атамырат\Downloads\pthread\KompilatoriLab1\KompilatoriLab1\obj\Debug\KompilatoriLab1.csproj.GenerateResource.cache
+C:\Users\Атамырат\Downloads\pthread\KompilatoriLab1\KompilatoriLab1\obj\Debug\KompilatoriLab1.csproj.CoreCompileInputs.cache
+C:\Users\Атамырат\Downloads\pthread\KompilatoriLab1\KompilatoriLab1\obj\Debug\KompilatoriLab1.exe
+C:\Users\Атамырат\Downloads\pthread\KompilatoriLab1\KompilatoriLab1\obj\Debug\KompilatoriLab1.pdb
+C:\Users\Атамырат\Downloads\pthread\KompilatoriLab1\KompilatoriLab1\obj\Debug\KompilatoriLab1.exe.config
