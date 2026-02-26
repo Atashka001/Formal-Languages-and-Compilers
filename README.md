@@ -37,7 +37,7 @@
 
 При запуске приложения можно будет увидеть поле для ввода, поле для вывода, панель быстрого доступа, а так же меню дня управления приложением.
 
-
+<img width="1154" height="545" alt="фотка в общем дизайна" src="https://github.com/user-attachments/assets/63343f0b-3bba-4caf-84c3-5334bf864268" />
 
 1. Кнопка для создания нового документа
 2. Кнопка открытие документа
@@ -53,23 +53,23 @@
 
 При нажатии на пункт меню "Файл" откроется подменю, где можно создать, открыть, сохранить и файл, а так же выйти из проложения.
 
-<p align="center"></p>
+<p align="center"><img width="371" height="207" alt="файл меню" src="https://github.com/user-attachments/assets/e5ad3552-b04e-49b5-9718-0e6fec27f156" /></p>
 
 При нажатии на пункт меню "Правка" откроется подменю, где можно произвести разного рода действия с кодом.
 
-<p align="center"></p>
+<p align="center"><img width="371" height="207" alt="правка меню" src="https://github.com/user-attachments/assets/cbb0ef27-d78d-4d21-bc4d-f0ed9099c46f" /></p>
 
 При нажатии на пункт меню "Текст" откроется подменю, где можно посмотреть все для текста кода.
 
-<p align="center"></p>
+<p align="center"><img width="451" height="215" alt="мею текст" src="https://github.com/user-attachments/assets/5aef3dfd-8726-4a93-a859-2533b3a40dcc" /></p>
 
 При нажатии на пункт меню "Пуск", приложение выполнит код и покажет в панеле вывода ошибки, если они будут.
 
-<p align="center"></p>
+<p align="center"><img width="341" height="129" alt="пуск" src="https://github.com/user-attachments/assets/7560c0d3-db96-41b5-bfda-fdabb535c20c" /></p>
 
 При нажатии на пункт меню "Справка" откроется подменю, где можно посмотреть сведения о программе.
 
-<p align="center"></p>
+<p align="center"><img width="461" height="148" alt="справка меню" src="https://github.com/user-attachments/assets/c77cfc55-0aad-4bc4-b5a0-0a6fb17cfd22" /></p>
 
 **Ограничения:**
 1. Функциональные ограничения:
