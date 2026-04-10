@@ -137,8 +137,7 @@ type Day = (Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday);
 2. Идентификаторы
     имена перечислений и элементы перечисления
     Примеры: Season, Winter, Spring, Color, Red
-3. Оператор
-    =
+3. Оператор =
 4. Разделители
     ,
     ;
