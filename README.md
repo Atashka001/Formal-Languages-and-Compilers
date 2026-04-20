@@ -250,6 +250,12 @@ K11 0B1
   <img width="1142" height="247" alt="image" src="https://github.com/user-attachments/assets/bd6fbb28-5477-48b5-a4e6-188d3425fa7f" />
 </p>
 
+**Граф автомата**
+
+<p align="center">
+  <img width="685" height="71" alt="Canadian_index" src="https://github.com/user-attachments/assets/4d96ec0e-7d6a-445e-916e-ace87912522b" />
+</p>
+
 **Решение задачи №2:** Регулярное выражение для стандартного формата юзернейма
 
 **Описание задачи:** Необходимо построить регулярное выражение, описывающее имя пользователя, которое:
@@ -308,6 +314,12 @@ user@1234 — содержит недопустимый символ @.
   <img width="1142" height="330" alt="image" src="https://github.com/user-attachments/assets/dd506541-548e-4d71-b8b8-f28cbc578762" />
 </p>
 
+**Граф автомата**
+
+<p align="center">
+  <img width="711" height="370" alt="user_name" src="https://github.com/user-attachments/assets/fd56f227-5307-4d09-aad3-36425dc330af" />
+</p>
+
 **Решение задачи №3:** Регулярное выражение для GUID
 
 **Описание задачи:** Необходимо построить регулярное выражение, описывающее GUID.
@@ -355,4 +367,10 @@ GUID (Globally Unique Identifier) обычно записывается в ви�
 
 <p align="center">
   <img width="1142" height="178" alt="image" src="https://github.com/user-attachments/assets/f8d25ff0-63b8-4b6e-88ae-64cb1d52fdbc" />
+</p>
+
+**Граф автомата**
+
+<p align="center">
+  <img width="770" height="451" alt="guid" src="https://github.com/user-attachments/assets/d8439134-0c34-4406-8f88-fa50045d5ed4" />
 </p>
