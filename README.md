@@ -474,7 +474,9 @@ EnumValueListNode - Представляет список элементов п�
 
 Рисунок дерева AST:
 
-картинка
+<p align="center">
+  <img width="431" height="1111" alt="AST_ris" src="https://github.com/user-attachments/assets/413aef1a-6164-4513-a7cb-74c7bc6bd164" />
+</p>
 
 Формат вывода AST в программе:
 
