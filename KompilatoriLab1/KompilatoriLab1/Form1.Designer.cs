@@ -29,6 +29,7 @@ namespace KompilatoriLab1
         private System.Windows.Forms.ToolStripMenuItem списокЛитературыToolStripMenuItem;
 
         private System.Windows.Forms.ToolStripMenuItem пускToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem деревоASTToolStripMenuItem;
 
         private System.Windows.Forms.ToolStripMenuItem справкаToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem вызовСправкиToolStripMenuItem;
@@ -88,6 +89,7 @@ namespace KompilatoriLab1
             this.тестовыйПримерToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.списокЛитературыToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.пускToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.деревоASTToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.справкаToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.вызовСправкиToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.оПрограммеToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -124,6 +126,7 @@ namespace KompilatoriLab1
             this.правкаToolStripMenuItem,
             this.текстToolStripMenuItem,
             this.пускToolStripMenuItem,
+            this.деревоASTToolStripMenuItem,
             this.справкаToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
@@ -276,6 +279,12 @@ namespace KompilatoriLab1
             this.пускToolStripMenuItem.Name = "пускToolStripMenuItem";
             this.пускToolStripMenuItem.Size = new System.Drawing.Size(55, 26);
             this.пускToolStripMenuItem.Text = "Пуск";
+            // 
+            // деревоASTToolStripMenuItem
+            // 
+            this.деревоASTToolStripMenuItem.Name = "деревоASTToolStripMenuItem";
+            this.деревоASTToolStripMenuItem.Size = new System.Drawing.Size(50, 26);
+            this.деревоASTToolStripMenuItem.Text = "AST";
             // 
             // справкаToolStripMenuItem
             // 
@@ -507,6 +516,6 @@ namespace KompilatoriLab1
 
         #endregion
 
-        
+
     }
 }
