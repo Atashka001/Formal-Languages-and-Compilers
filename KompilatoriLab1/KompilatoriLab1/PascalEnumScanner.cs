@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace KompilatoriLab1
@@ -9,9 +9,11 @@ namespace KompilatoriLab1
         {
             KEYWORD = 1,
             IDENTIFIER = 2,
-            OPERATOR = 3,
-            SEPARATOR = 4,
-            PAREN = 5,
+            NUMBER = 3,
+            BOOLEAN = 4,
+            OPERATOR = 5,
+            SEPARATOR = 6,
+            PAREN = 7,
             ERROR = 99
         }
 
@@ -86,10 +88,32 @@ namespace KompilatoriLab1
                 int startLine = line;
                 int startCol = col;
 
-                if (char.IsLetter(c))
+                if (char.IsDigit(c))
                 {
-                    while (pos < text.Length &&
-                           (char.IsLetterOrDigit(text[pos]) || text[pos] == '_'))
+                    while (pos < text.Length && char.IsDigit(text[pos]))
+                    {
+                        pos++;
+                        col++;
+                    }
+
+                    string number = text.Substring(startPos, pos - startPos);
+
+                    result.Tokens.Add(new Token
+                    {
+                        Type = TokenType.NUMBER,
+                        Value = number,
+                        Line = startLine,
+                        StartColumn = startCol,
+                        EndColumn = col - 1,
+                        AbsolutePosition = startPos
+                    });
+
+                    continue;
+                }
+
+                if (IsIdentifierLikeStart(c))
+                {
+                    while (pos < text.Length && IsIdentifierLikePart(text[pos]))
                     {
                         pos++;
                         col++;
@@ -97,17 +121,124 @@ namespace KompilatoriLab1
 
                     string lexeme = text.Substring(startPos, pos - startPos);
 
-                    result.Tokens.Add(new Token
+                    if (IsValidAsciiIdentifier(lexeme))
                     {
-                        Type = string.Equals(lexeme, "type", StringComparison.OrdinalIgnoreCase)
-                            ? TokenType.KEYWORD
-                            : TokenType.IDENTIFIER,
-                        Value = lexeme,
-                        Line = startLine,
-                        StartColumn = startCol,
-                        EndColumn = col - 1,
-                        AbsolutePosition = startPos
-                    });
+                        TokenType tokenType;
+
+                        if (string.Equals(lexeme, "type", StringComparison.OrdinalIgnoreCase))
+                        {
+                            tokenType = TokenType.KEYWORD;
+                        }
+                        else if (string.Equals(lexeme, "true", StringComparison.OrdinalIgnoreCase) ||
+                                 string.Equals(lexeme, "false", StringComparison.OrdinalIgnoreCase))
+                        {
+                            tokenType = TokenType.BOOLEAN;
+                        }
+                        else
+                        {
+                            tokenType = TokenType.IDENTIFIER;
+                        }
+
+                        result.Tokens.Add(new Token
+                        {
+                            Type = tokenType,
+                            Value = lexeme,
+                            Line = startLine,
+                            StartColumn = startCol,
+                            EndColumn = col - 1,
+                            AbsolutePosition = startPos
+                        });
+                    }
+                    else
+                    {
+                        string message;
+
+                        if (lexeme.Length > 0 && char.IsDigit(lexeme[0]))
+                            message = $"Недопустимый идентификатор '{lexeme}': идентификатор не может начинаться с цифры.";
+                        else if (lexeme.Length > 0 && lexeme[0] == '_')
+                            message = $"Недопустимый идентификатор '{lexeme}': идентификатор должен начинаться с латинской буквы.";
+                        else
+                            message = $"Недопустимый идентификатор '{lexeme}': используйте только латинские буквы, цифры и '_'.";
+
+                        int firstInvalidIndex = -1;
+                        var invalidCharIndexes = new List<int>();
+
+                        for (int i = 0; i < lexeme.Length; i++)
+                        {
+                            char ch = lexeme[i];
+
+                            bool valid = i == 0
+                                ? IsAsciiLetter(ch)
+                                : IsAsciiIdentifierPart(ch);
+
+                            if (!valid)
+                            {
+                                if (firstInvalidIndex == -1)
+                                    firstInvalidIndex = i;
+
+                                invalidCharIndexes.Add(i);
+                            }
+                        }
+
+                        bool emittedNonDigitSymbolErrors = false;
+
+                        foreach (int idx in invalidCharIndexes)
+                        {
+                            char bad = lexeme[idx];
+
+                            if (char.IsDigit(bad))
+                                continue;
+
+                            emittedNonDigitSymbolErrors = true;
+
+                            result.Errors.Add(new Error
+                            {
+                                Line = startLine,
+                                Column = startCol + idx,
+                                Message = $"Недопустимый символ '{bad}'",
+                                Symbol = bad,
+                                AbsolutePosition = startPos + idx
+                            });
+                        }
+
+                        if (!emittedNonDigitSymbolErrors)
+                        {
+                            if (firstInvalidIndex >= 0)
+                            {
+                                char firstInvalidChar = lexeme[firstInvalidIndex];
+
+                                result.Errors.Add(new Error
+                                {
+                                    Line = startLine,
+                                    Column = startCol + firstInvalidIndex,
+                                    Message = message,
+                                    Symbol = firstInvalidChar,
+                                    AbsolutePosition = startPos + firstInvalidIndex
+                                });
+                            }
+                            else
+                            {
+                                result.Errors.Add(new Error
+                                {
+                                    Line = startLine,
+                                    Column = startCol,
+                                    Message = message,
+                                    Symbol = lexeme[0],
+                                    AbsolutePosition = startPos
+                                });
+                            }
+                        }
+
+                        result.Tokens.Add(new Token
+                        {
+                            Type = TokenType.IDENTIFIER,
+                            Value = lexeme,
+                            Line = startLine,
+                            StartColumn = startCol,
+                            EndColumn = col - 1,
+                            AbsolutePosition = startPos
+                        });
+                    }
 
                     continue;
                 }
@@ -187,6 +318,48 @@ namespace KompilatoriLab1
             }
 
             return result;
+        }
+
+        private static bool IsAsciiLetter(char c)
+        {
+            return c >= 'A' && c <= 'Z' || c >= 'a' && c <= 'z';
+        }
+
+        private static bool IsAsciiIdentifierPart(char c)
+        {
+            return IsAsciiLetter(c) || char.IsDigit(c) || c == '_';
+        }
+
+        private static bool IsValidAsciiIdentifier(string lexeme)
+        {
+            if (string.IsNullOrEmpty(lexeme))
+                return false;
+
+            if (!IsAsciiLetter(lexeme[0]))
+                return false;
+
+            for (int i = 1; i < lexeme.Length; i++)
+            {
+                if (!IsAsciiIdentifierPart(lexeme[i]))
+                    return false;
+            }
+
+            return true;
+        }
+
+        private static bool IsIdentifierLikeStart(char c)
+        {
+            return !char.IsWhiteSpace(c) &&
+                   c != '=' &&
+                   c != ',' &&
+                   c != ';' &&
+                   c != '(' &&
+                   c != ')';
+        }
+
+        private static bool IsIdentifierLikePart(char c)
+        {
+            return IsIdentifierLikeStart(c);
         }
     }
 }
