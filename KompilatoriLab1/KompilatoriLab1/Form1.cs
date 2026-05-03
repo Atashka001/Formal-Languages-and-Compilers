@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
@@ -8,8 +9,23 @@ namespace KompilatoriLab1
     public partial class Form1 : Form
     {
         private readonly PascalEnumScanner _scanner = new PascalEnumScanner();
+
         private string _currentFilePath = string.Empty;
         private bool _isDirty = false;
+
+        private bool _showAstTable = false;
+        private string _lastAstText = "AST не построено.";
+        private int _lastTotalErrors = 0;
+
+        private readonly List<ResultRowInfo> _lastErrorRows = new List<ResultRowInfo>();
+
+        private class ResultRowInfo
+        {
+            public string Fragment { get; set; }
+            public string Location { get; set; }
+            public string Description { get; set; }
+            public object Tag { get; set; }
+        }
 
         public Form1()
         {
@@ -21,8 +37,10 @@ namespace KompilatoriLab1
 
         private void InitializeUi()
         {
-            Text = "Текстовый редактор с лексическим анализатором";
+            Text = "Текстовый редактор с семантическим анализатором";
+
             richTextBox1.Font = new Font("Consolas", 11F);
+
             dataGridView1.AllowUserToAddRows = false;
             dataGridView1.ReadOnly = true;
             dataGridView1.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
@@ -30,39 +48,120 @@ namespace KompilatoriLab1
             dataGridView1.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
             dataGridView1.DefaultCellStyle.WrapMode = DataGridViewTriState.True;
 
+            if (деревоASTToolStripMenuItem != null)
+                деревоASTToolStripMenuItem.Text = "AST";
+
             UpdateTitle();
         }
 
         private void WireEvents()
         {
-            // Не трогаем button4/button12 и другие кнопки, если они уже привязаны в Designer.
-            // Подключаем только то, что не ломает существующие обработчики.
+            button1.Click -= button1_Click;
+            button1.Click += button1_Click;
 
-            создатьToolStripMenuItem.Click += (s, e) => CreateNewFile();
-            открытьToolStripMenuItem.Click += (s, e) => OpenFile();
-            сохранитьToolStripMenuItem.Click += (s, e) => SaveFile();
-            сохранитьКакToolStripMenuItem.Click += (s, e) => SaveFileAs();
-            выходToolStripMenuItem.Click += (s, e) => Close();
+            button2.Click -= button2_Click;
+            button2.Click += button2_Click;
 
-            постановкаЗадачиToolStripMenuItem.Click += (s, e) => InsertTaskText();
-            грамматикаToolStripMenuItem.Click += (s, e) => InsertGrammarText();
-            классификацияГрамматикиToolStripMenuItem.Click += (s, e) => InsertGrammarClassText();
-            методАнализаToolStripMenuItem.Click += (s, e) => InsertMethodText();
-            тестовыйПримерToolStripMenuItem.Click += (s, e) => InsertTestExample();
-            списокЛитературыToolStripMenuItem.Click += (s, e) => InsertReferences();
+            button3.Click -= button3_Click;
+            button3.Click += button3_Click;
 
+            button4.Click -= button4_Click_2;
+            button4.Click += button4_Click_2;
+
+            button5.Click -= button5_Click;
+            button5.Click += button5_Click;
+
+            button6.Click -= button6_Click;
+            button6.Click += button6_Click;
+
+            button7.Click -= button7_Click;
+            button7.Click += button7_Click;
+
+            button8.Click -= button8_Click;
+            button8.Click += button8_Click;
+
+            button9.Click -= button9_Click;
+            button9.Click += button9_Click;
+
+            button10.Click -= button10_Click;
+            button10.Click += button10_Click;
+
+            button11.Click -= button11_Click;
+            button11.Click += button11_Click;
+
+            button12.Click -= button12_Click;
+            button12.Click += button12_Click;
+
+            создатьToolStripMenuItem.Click -= CreateNewFileMenu_Click;
+            создатьToolStripMenuItem.Click += CreateNewFileMenu_Click;
+
+            открытьToolStripMenuItem.Click -= OpenFileMenu_Click;
+            открытьToolStripMenuItem.Click += OpenFileMenu_Click;
+
+            сохранитьToolStripMenuItem.Click -= SaveFileMenu_Click;
+            сохранитьToolStripMenuItem.Click += SaveFileMenu_Click;
+
+            сохранитьКакToolStripMenuItem.Click -= SaveFileAsMenu_Click;
+            сохранитьКакToolStripMenuItem.Click += SaveFileAsMenu_Click;
+
+            выходToolStripMenuItem.Click -= ExitMenu_Click;
+            выходToolStripMenuItem.Click += ExitMenu_Click;
+
+            отменитьToolStripMenuItem.Click -= UndoMenu_Click;
+            отменитьToolStripMenuItem.Click += UndoMenu_Click;
+
+            повторитьToolStripMenuItem.Click -= RedoMenu_Click;
+            повторитьToolStripMenuItem.Click += RedoMenu_Click;
+
+            вырезатьToolStripMenuItem.Click -= CutMenu_Click;
+            вырезатьToolStripMenuItem.Click += CutMenu_Click;
+
+            копироватьToolStripMenuItem.Click -= CopyMenu_Click;
+            копироватьToolStripMenuItem.Click += CopyMenu_Click;
+
+            вставитьToolStripMenuItem.Click -= PasteMenu_Click;
+            вставитьToolStripMenuItem.Click += PasteMenu_Click;
+
+            удалитьToolStripMenuItem.Click -= DeleteMenu_Click;
+            удалитьToolStripMenuItem.Click += DeleteMenu_Click;
+
+            постановкаЗадачиToolStripMenuItem.Click -= InsertTaskTextMenu_Click;
+            постановкаЗадачиToolStripMenuItem.Click += InsertTaskTextMenu_Click;
+
+            грамматикаToolStripMenuItem.Click -= InsertGrammarTextMenu_Click;
+            грамматикаToolStripMenuItem.Click += InsertGrammarTextMenu_Click;
+
+            классификацияГрамматикиToolStripMenuItem.Click -= InsertGrammarClassTextMenu_Click;
+            классификацияГрамматикиToolStripMenuItem.Click += InsertGrammarClassTextMenu_Click;
+
+            методАнализаToolStripMenuItem.Click -= InsertMethodTextMenu_Click;
+            методАнализаToolStripMenuItem.Click += InsertMethodTextMenu_Click;
+
+            тестовыйПримерToolStripMenuItem.Click -= InsertTestExampleMenu_Click;
+            тестовыйПримерToolStripMenuItem.Click += InsertTestExampleMenu_Click;
+
+            списокЛитературыToolStripMenuItem.Click -= InsertReferencesMenu_Click;
+            списокЛитературыToolStripMenuItem.Click += InsertReferencesMenu_Click;
+
+            пускToolStripMenuItem.Click -= button9_Click;
             пускToolStripMenuItem.Click += button9_Click;
-            вызовСправкиToolStripMenuItem.Click += (s, e) => ShowHelp();
-            оПрограммеToolStripMenuItem.Click += (s, e) => ShowAbout();
 
+            деревоASTToolStripMenuItem.Click -= ToggleAstMenu_Click;
+            деревоASTToolStripMenuItem.Click += ToggleAstMenu_Click;
+
+            вызовСправкиToolStripMenuItem.Click -= ShowHelpMenu_Click;
+            вызовСправкиToolStripMenuItem.Click += ShowHelpMenu_Click;
+
+            оПрограммеToolStripMenuItem.Click -= ShowAboutMenu_Click;
+            оПрограммеToolStripMenuItem.Click += ShowAboutMenu_Click;
+
+            dataGridView1.CellClick -= DataGridView1_CellClick;
             dataGridView1.CellClick += DataGridView1_CellClick;
 
-            richTextBox1.TextChanged += (s, e) =>
-            {
-                _isDirty = true;
-                UpdateTitle();
-            };
+            richTextBox1.TextChanged -= RichTextBox1_TextChanged;
+            richTextBox1.TextChanged += RichTextBox1_TextChanged;
 
+            FormClosing -= Form1_FormClosing;
             FormClosing += Form1_FormClosing;
         }
 
@@ -85,9 +184,18 @@ namespace KompilatoriLab1
             }
         }
 
-        private void button9_Click(object sender, EventArgs e)
+        private void SetupAstGrid()
         {
-            RunFullAnalysis();
+            dataGridView1.Columns.Clear();
+            dataGridView1.Rows.Clear();
+
+            dataGridView1.Columns.Add("Ast", "AST");
+            dataGridView1.Columns[0].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+
+            foreach (DataGridViewColumn column in dataGridView1.Columns)
+            {
+                column.SortMode = DataGridViewColumnSortMode.NotSortable;
+            }
         }
 
         private void RunFullAnalysis()
@@ -96,46 +204,70 @@ namespace KompilatoriLab1
             {
                 string text = richTextBox1.Text ?? string.Empty;
 
+                _showAstTable = false;
+                _lastAstText = "AST не построено.";
+                _lastTotalErrors = 0;
+                _lastErrorRows.Clear();
+
                 ClearResultArea();
+                SetupErrorGrid();
 
                 var scanResult = _scanner.Scan(text);
-
-                if (scanResult.Errors.Count > 0)
-                {
-                    ShowLexicalErrors(scanResult);
-
-                    MessageBox.Show(
-                        $"Обнаружены лексические ошибки: {scanResult.Errors.Count}",
-                        "Лексический анализ",
-                        MessageBoxButtons.OK,
-                        MessageBoxIcon.Warning);
-
-                    return;
-                }
-
-                var parser = new PascalEnumParser(scanResult.Tokens);
+                var parser = new PascalEnumParser(scanResult.Tokens, scanResult.Errors);
                 var parseResult = parser.Parse();
 
-                if (parseResult.Success)
+                _lastAstText = parseResult.AstText;
+
+                int totalErrors = 0;
+
+                foreach (var error in scanResult.Errors)
                 {
-                    SetupErrorGrid();
+                    _lastErrorRows.Add(new ResultRowInfo
+                    {
+                        Fragment = error.Symbol.ToString(),
+                        Location = $"строка {error.Line}, позиция {error.Column}",
+                        Description = error.Message,
+                        Tag = error
+                    });
 
-                    MessageBox.Show(
-                        "Синтаксический анализ завершён. Ошибок не обнаружено.",
-                        "Синтаксический анализ",
-                        MessageBoxButtons.OK,
-                        MessageBoxIcon.Information);
-
-                    return;
+                    totalErrors++;
                 }
 
-                ShowSyntaxErrors(parseResult);
+                foreach (var error in PascalEnumParser.FilterCascadingAgainstLexical(parseResult.Errors, scanResult.Errors))
+                {
+                    _lastErrorRows.Add(new ResultRowInfo
+                    {
+                        Fragment = error.Fragment,
+                        Location = $"строка {error.Line}, позиция {error.Column}",
+                        Description = error.Description,
+                        Tag = error
+                    });
 
-                MessageBox.Show(
-                    $"Синтаксический анализ завершён. Ошибок: {parseResult.Errors.Count}",
-                    "Синтаксический анализ",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Warning);
+                    totalErrors++;
+                }
+
+                _lastTotalErrors = totalErrors;
+                ShowErrorTableFromLastResult();
+
+                if (деревоASTToolStripMenuItem != null)
+                    деревоASTToolStripMenuItem.Text = "AST";
+
+                if (totalErrors == 0)
+                {
+                    MessageBox.Show(
+                        "Анализ завершён. Ошибок не обнаружено.",
+                        "Анализ",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Information);
+                }
+                else
+                {
+                    MessageBox.Show(
+                        $"Анализ завершён. Ошибок: {totalErrors}",
+                        "Анализ",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Warning);
+                }
             }
             catch (Exception ex)
             {
@@ -147,50 +279,82 @@ namespace KompilatoriLab1
             }
         }
 
+        private void ShowAstTable()
+        {
+            ClearResultArea();
+            SetupAstGrid();
+
+            string[] lines = (_lastAstText ?? "AST не построено.")
+                .Replace("\r\n", "\n")
+                .Split('\n');
+
+            foreach (string line in lines)
+            {
+                if (string.IsNullOrWhiteSpace(line))
+                    continue;
+
+                int rowIndex = dataGridView1.Rows.Add(line);
+                var row = dataGridView1.Rows[rowIndex];
+
+                row.DefaultCellStyle.BackColor = Color.Honeydew;
+                row.DefaultCellStyle.ForeColor = Color.DarkGreen;
+                row.DefaultCellStyle.Font = new Font("Consolas", 10F, FontStyle.Regular);
+            }
+        }
+
+        private void ShowErrorTableFromLastResult()
+        {
+            ClearResultArea();
+            SetupErrorGrid();
+
+            foreach (var rowInfo in _lastErrorRows)
+            {
+                AddGridErrorRow(
+                    rowInfo.Fragment,
+                    rowInfo.Location,
+                    rowInfo.Description,
+                    rowInfo.Tag);
+            }
+
+            AddTotalErrorsRow(_lastTotalErrors);
+        }
+
+        private void ToggleAstMenu_Click(object sender, EventArgs e)
+        {
+            if (_showAstTable)
+            {
+                _showAstTable = false;
+
+                if (деревоASTToolStripMenuItem != null)
+                    деревоASTToolStripMenuItem.Text = "AST";
+
+                ShowErrorTableFromLastResult();
+            }
+            else
+            {
+                _showAstTable = true;
+
+                if (деревоASTToolStripMenuItem != null)
+                    деревоASTToolStripMenuItem.Text = "Ошибки";
+
+                ShowAstTable();
+            }
+        }
+
+        private void AddGridErrorRow(string fragment, string location, string description, object tag)
+        {
+            int rowIndex = dataGridView1.Rows.Add(fragment, location, description);
+            var row = dataGridView1.Rows[rowIndex];
+
+            row.Tag = tag;
+            row.DefaultCellStyle.BackColor = Color.MistyRose;
+            row.DefaultCellStyle.ForeColor = Color.DarkRed;
+        }
+
         private void ClearResultArea()
         {
             dataGridView1.Rows.Clear();
             dataGridView1.Columns.Clear();
-        }
-
-        private void ShowLexicalErrors(PascalEnumScanner.ScanResult scanResult)
-        {
-            SetupErrorGrid();
-
-            foreach (var error in scanResult.Errors)
-            {
-                int rowIndex = dataGridView1.Rows.Add(
-                    error.Symbol.ToString(),
-                    $"строка {error.Line}, позиция {error.Column}",
-                    error.Message);
-
-                var row = dataGridView1.Rows[rowIndex];
-                row.Tag = error;
-                row.DefaultCellStyle.BackColor = Color.MistyRose;
-                row.DefaultCellStyle.ForeColor = Color.DarkRed;
-            }
-
-            AddTotalErrorsRow(scanResult.Errors.Count);
-        }
-
-        private void ShowSyntaxErrors(PascalEnumParser.ParseResult parseResult)
-        {
-            SetupErrorGrid();
-
-            foreach (var error in parseResult.Errors)
-            {
-                int rowIndex = dataGridView1.Rows.Add(
-                    error.Fragment,
-                    $"строка {error.Line}, позиция {error.Column}",
-                    error.Description);
-
-                var row = dataGridView1.Rows[rowIndex];
-                row.Tag = error;
-                row.DefaultCellStyle.BackColor = Color.MistyRose;
-                row.DefaultCellStyle.ForeColor = Color.DarkRed;
-            }
-
-            AddTotalErrorsRow(parseResult.Errors.Count);
         }
 
         private void AddTotalErrorsRow(int count)
@@ -249,8 +413,18 @@ namespace KompilatoriLab1
 
             richTextBox1.Clear();
             ClearResultArea();
+            SetupErrorGrid();
+
             _currentFilePath = string.Empty;
             _isDirty = false;
+            _showAstTable = false;
+            _lastAstText = "AST не построено.";
+            _lastTotalErrors = 0;
+            _lastErrorRows.Clear();
+
+            if (деревоASTToolStripMenuItem != null)
+                деревоASTToolStripMenuItem.Text = "AST";
+
             UpdateTitle();
         }
 
@@ -269,6 +443,14 @@ namespace KompilatoriLab1
                     richTextBox1.Text = File.ReadAllText(dialog.FileName);
                     _currentFilePath = dialog.FileName;
                     _isDirty = false;
+                    _showAstTable = false;
+                    _lastAstText = "AST не построено.";
+                    _lastTotalErrors = 0;
+                    _lastErrorRows.Clear();
+
+                    if (деревоASTToolStripMenuItem != null)
+                        деревоASTToolStripMenuItem.Text = "AST";
+
                     UpdateTitle();
                 }
             }
@@ -333,7 +515,7 @@ namespace KompilatoriLab1
                 ? "Без имени"
                 : Path.GetFileName(_currentFilePath);
 
-            Text = $"{fileName}{(_isDirty ? "*" : "")} - Текстовый редактор с лексическим анализатором";
+            Text = $"{fileName}{(_isDirty ? "*" : "")} - Текстовый редактор с семантическим анализатором";
         }
 
         private void ShowHelp()
@@ -357,9 +539,18 @@ namespace KompilatoriLab1
             richTextBox1.Text =
 @"Постановка задачи
 
-Разработать синтаксический анализатор для конструкции объявления перечисления Pascal.
-Анализатор должен запускаться после лексического анализа, обнаруживать синтаксические
-ошибки, продолжать анализ после ошибки и выводить таблицу с описанием ошибок.";
+Разработать семантический анализатор для конструкции объявления перечисления Pascal.
+
+Пример конструкции:
+type Season = (Winter, Spring, Summer, Autumn);
+
+Программа должна выполнять:
+1. Лексический анализ.
+2. Синтаксический анализ.
+3. Построение AST.
+4. Проверку уникальности идентификаторов.
+5. Проверку недопустимых элементов перечисления: чисел, true и false.
+6. Вывод таблицы ошибок и дерева AST.";
         }
 
         private void InsertGrammarText()
@@ -367,9 +558,12 @@ namespace KompilatoriLab1
             richTextBox1.Text =
 @"Грамматика
 
-<EnumDecl>   ::= type <Identifier> = ( <IdList> ) ;
-<IdList>     ::= <Identifier> <IdListTail>
-<IdListTail> ::= , <Identifier> <IdListTail> | ε";
+<объявление_перечисления> ::= type <идентификатор> = ( <список_идентификаторов> ) ;
+
+<список_идентификаторов> ::= <идентификтор>
+                           | <идентификатор> , <список_идентификаторов>
+
+<идентификатор> ::= id";
         }
 
         private void InsertGrammarClassText()
@@ -378,7 +572,7 @@ namespace KompilatoriLab1
 @"Классификация грамматики
 
 Данная грамматика является контекстно-свободной.
-Она описывает синтаксическую конструкцию объявления перечисления Pascal.";
+Она описывает синтаксическую конструкцию объявления перечислимого типа Pascal.";
         }
 
         private void InsertMethodText()
@@ -387,15 +581,14 @@ namespace KompilatoriLab1
 @"Метод анализа
 
 Используется нисходящий синтаксический анализ.
-Сначала выполняется лексический анализ, затем синтаксический.
-При обнаружении ошибки применяется восстановление с продолжением анализа
-(нейтрализация ошибок методом Айронса).";
+Сначала выполняется лексический анализ, затем синтаксический и семантический анализ.
+В процессе анализа строится абстрактное синтаксическое дерево AST.
+При обнаружении ошибки программа продолжает анализ и выводит найденные ошибки в таблицу.";
         }
 
         private void InsertTestExample()
         {
-            richTextBox1.Text =
-@"type Season = (Winter, Spring, Summer, Autumn);";
+            richTextBox1.Text = @"type Season = (Winter, Spring, Summer, Autumn);";
         }
 
         private void InsertReferences()
@@ -408,44 +601,187 @@ namespace KompilatoriLab1
 3. Документация Microsoft по Windows Forms.";
         }
 
+        private void RichTextBox1_TextChanged(object sender, EventArgs e)
+        {
+            _isDirty = true;
+            UpdateTitle();
+        }
+
+        private void CreateNewFileMenu_Click(object sender, EventArgs e)
+        {
+            CreateNewFile();
+        }
+
+        private void OpenFileMenu_Click(object sender, EventArgs e)
+        {
+            OpenFile();
+        }
+
+        private void SaveFileMenu_Click(object sender, EventArgs e)
+        {
+            SaveFile();
+        }
+
+        private void SaveFileAsMenu_Click(object sender, EventArgs e)
+        {
+            SaveFileAs();
+        }
+
+        private void ExitMenu_Click(object sender, EventArgs e)
+        {
+            Close();
+        }
+
+        private void UndoMenu_Click(object sender, EventArgs e)
+        {
+            if (richTextBox1.CanUndo)
+                richTextBox1.Undo();
+        }
+
+        private void RedoMenu_Click(object sender, EventArgs e)
+        {
+            if (richTextBox1.CanRedo)
+                richTextBox1.Redo();
+        }
+
+        private void CutMenu_Click(object sender, EventArgs e)
+        {
+            richTextBox1.Cut();
+        }
+
+        private void CopyMenu_Click(object sender, EventArgs e)
+        {
+            richTextBox1.Copy();
+        }
+
+        private void PasteMenu_Click(object sender, EventArgs e)
+        {
+            richTextBox1.Paste();
+        }
+
+        private void DeleteMenu_Click(object sender, EventArgs e)
+        {
+            richTextBox1.SelectedText = string.Empty;
+        }
+
+        private void InsertTaskTextMenu_Click(object sender, EventArgs e)
+        {
+            InsertTaskText();
+        }
+
+        private void InsertGrammarTextMenu_Click(object sender, EventArgs e)
+        {
+            InsertGrammarText();
+        }
+
+        private void InsertGrammarClassTextMenu_Click(object sender, EventArgs e)
+        {
+            InsertGrammarClassText();
+        }
+
+        private void InsertMethodTextMenu_Click(object sender, EventArgs e)
+        {
+            InsertMethodText();
+        }
+
+        private void InsertTestExampleMenu_Click(object sender, EventArgs e)
+        {
+            InsertTestExample();
+        }
+
+        private void InsertReferencesMenu_Click(object sender, EventArgs e)
+        {
+            InsertReferences();
+        }
+
+        private void ShowHelpMenu_Click(object sender, EventArgs e)
+        {
+            ShowHelp();
+        }
+
+        private void ShowAboutMenu_Click(object sender, EventArgs e)
+        {
+            ShowAbout();
+        }
+
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
             if (!ConfirmSaveChanges())
-            {
                 e.Cancel = true;
-            }
         }
 
-        // Оставлены без изменений
-        private void button1_Click(object sender, EventArgs e) { }
-        private void button2_Click(object sender, EventArgs e) { }
-        private void button3_Click(object sender, EventArgs e) { }
-        private void button4_Click(object sender, EventArgs e) { }
-        private void button5_Click(object sender, EventArgs e) { }
-        private void button6_Click(object sender, EventArgs e) { }
-        private void button7_Click(object sender, EventArgs e) { }
-        private void button8_Click(object sender, EventArgs e) { }
-        private void button10_Click(object sender, EventArgs e) { }
-        private void button11_Click(object sender, EventArgs e) { }
+        private void button1_Click(object sender, EventArgs e)
+        {
+            CreateNewFile();
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            OpenFile();
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            SaveFile();
+        }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+        }
+
+        private void button5_Click(object sender, EventArgs e)
+        {
+            richTextBox1.Cut();
+        }
+
+        private void button6_Click(object sender, EventArgs e)
+        {
+            richTextBox1.Copy();
+        }
+
+        private void button7_Click(object sender, EventArgs e)
+        {
+            richTextBox1.Paste();
+        }
+
+        private void button8_Click(object sender, EventArgs e)
+        {
+            richTextBox1.SelectedText = string.Empty;
+        }
+
+        private void button9_Click(object sender, EventArgs e)
+        {
+            RunFullAnalysis();
+        }
+
+        private void button10_Click(object sender, EventArgs e)
+        {
+            ShowHelp();
+        }
+
+        private void button11_Click(object sender, EventArgs e)
+        {
+            ShowAbout();
+        }
 
         private void button4_Click_1(object sender, EventArgs e)
         {
-
         }
 
         private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
-
         }
 
         private void button4_Click_2(object sender, EventArgs e)
         {
-            richTextBox1.Undo();
+            if (richTextBox1.CanUndo)
+                richTextBox1.Undo();
         }
 
         private void button12_Click(object sender, EventArgs e)
         {
-            richTextBox1.Redo();
+            if (richTextBox1.CanRedo)
+                richTextBox1.Redo();
         }
     }
 }
