@@ -260,22 +260,18 @@ id	идентификатор имени типа или элемента пер
 
 ```
 <START> -> 'type' <SPACE>
-<SPACE> -> '_' <ID>
-<ID> -> 'Season' <EQUALS>
+<SPACE> -> '_' <ID_TYPE>
+<ID_TYPE> -> <ID> <EQUALS>
 <EQUALS> -> '=' <OPEN_BRACKET>
 <OPEN_BRACKET> -> '(' <ENUM_ID>
-<ENUM_ID> -> 'Winter' <ENUM_TAIL>
+<ENUM_ID> -> <ID> <ENUM_TAIL>
 <ENUM_TAIL> -> ',' <ENUM_ID>
-<ENUM_ID> -> 'Spring' <ENUM_TAIL>
-<ENUM_TAIL> -> ',' <ENUM_ID>
-<ENUM_ID> -> 'Summer' <ENUM_TAIL>
-<ENUM_TAIL> -> ',' <ENUM_ID>
-<ENUM_ID> -> 'Autumn' <CLOSE_BRACKET>
+<ENUM_ID> -> <ID> <CLOSE_BRACKET>
 <CLOSE_BRACKET> -> ')' <SEMICOLON>
 <SEMICOLON> -> ';'
 
 Vt = {=, (, ), ,, ;, ' ', a....z, A....Z, 1....9}
-Vn = {<START>, <SPACE>, <EQUALS>, <OPEN_BRACKET>, <ENUM_ID>, <ENUM_TAIL>, <CLOSE_BRACKET>, <SEMICOLON>}
+Vn = {<START>, <SPACE>, <EQUALS>, <ID_TYPE>, <OPEN_BRACKET>, <ID>, <ENUM_ID>, <ENUM_TAIL>, <CLOSE_BRACKET>, <SEMICOLON>}
 S = <START>
 ```
 
