@@ -269,10 +269,12 @@ id	идентификатор имени типа или элемента пер
 <ENUM_ID> -> <ID> <CLOSE_BRACKET>
 <CLOSE_BRACKET> -> ')' <SEMICOLON>
 <SEMICOLON> -> ';'
-
 Vt = {=, (, ), ,, ;, ' ', a....z, A....Z, 1....9}
 Vn = {<START>, <SPACE>, <EQUALS>, <ID_TYPE>, <OPEN_BRACKET>, <ID>, <ENUM_ID>, <ENUM_TAIL>, <CLOSE_BRACKET>, <SEMICOLON>}
 S = <START>
+letter = A | B | C | ... | Z | a | b | c | ... | z
+digit = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9
+id — это идентификатор: имя типа или имя элемента перечисления.
 ```
 
 **Классификация грамматики**
