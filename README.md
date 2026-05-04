@@ -259,36 +259,39 @@ id	идентификатор имени типа или элемента пер
 ```
 
 ```
-1.  <START>       -> 'type' <SPACE>
-2.  <SPACE>       -> ' ' <ID_TYPE>
-3.  <ID_TYPE>     -> id <EQUALS_SPACE>
-4.  <EQUALS_SPACE> -> ' ' <EQUALS>
-5.  <EQUALS>      -> '=' <OPEN_SPACE>
-6.  <OPEN_SPACE>  -> ' ' <OPEN_BRACKET>
-7.  <OPEN_BRACKET> -> '(' <ENUM_ID>
-8.  <ENUM_ID>     -> id <ENUM_TAIL>
-9.  <ENUM_TAIL>   -> ',' <SPACE_AFTER_COMMA>
-10. <SPACE_AFTER_COMMA> -> ' ' <ENUM_ID>
-11. <ENUM_TAIL>   -> <CLOSE_BRACKET>
-12. <CLOSE_BRACKET> -> ')' <SEMICOLON>
-13. <SEMICOLON>   -> ';'
+<START> -> 'type' <SPACE>
+<SPACE> -> '_' <ID>
+<ID> -> 'Season' <EQUALS>
+<EQUALS> -> '=' <OPEN_BRACKET>
+<OPEN_BRACKET> -> '(' <ENUM_ID>
+<ENUM_ID> -> 'Winter' <ENUM_TAIL>
+<ENUM_TAIL> -> ',' <ENUM_ID>
+<ENUM_ID> -> 'Spring' <ENUM_TAIL>
+<ENUM_TAIL> -> ',' <ENUM_ID>
+<ENUM_ID> -> 'Summer' <ENUM_TAIL>
+<ENUM_TAIL> -> ',' <ENUM_ID>
+<ENUM_ID> -> 'Autumn' <CLOSE_BRACKET>
+<CLOSE_BRACKET> -> ')' <SEMICOLON>
+<SEMICOLON> -> ';'
 
-Vt = {type, id, =, (, ), ,, ;, ' ', a....z, A....Z, 1....9}
-Vn = {<START>, <SPACE>, <ID_TYPE>, <EQUALS_SPACE>, <EQUALS>, <OPEN_SPACE>, <OPEN_BRACKET>, <ENUM_ID>, <ENUM_TAIL>, <SPACE_AFTER_COMMA>, <CLOSE_BRACKET>, <SEMICOLON>}
+Vt = {=, (, ), ,, ;, ' ', a....z, A....Z, 1....9}
+Vn = {<START>, <SPACE>, <EQUALS>, <OPEN_BRACKET>, <ENUM_ID>, <ENUM_TAIL>, <CLOSE_BRACKET>, <SEMICOLON>}
 S = <START>
 ```
 
 **Классификация грамматики**
 
-Разработанная грамматика относится к контекстно-свободным грамматикам, то есть к грамматикам типа 2 по классификации Хомского.
+Разработанная грамматика относится к автоматным грамматикам.
 
-Основание: в каждом правиле вывода слева находится ровно один нетерминальный символ, а справа — цепочка терминальных и/или нетерминальных символов. Это соответствует общей форме правила контекстно-свободной грамматики:
+<p align="center">
+  <img width="288" height="23" alt="image" src="https://github.com/user-attachments/assets/27dbc0f6-ccc0-4af3-b05f-02d5bd6cbb38" />
+</p>
 
-A → α
+Согласно учебнику, правила вывода автоматной грамматики имеют вид:
 
-где A — один нетерминал, а α — произвольная цепочка символов грамматики.
-
-Данная грамматика не является контекстно-зависимой, так как для применения правил не требуется учитывать левый или правый контекст нетерминала. Она также не рассматривается как регулярная в рамках работы, поскольку реализуется полноценный синтаксический анализ структурированной языковой конструкции со списком элементов и обязательными ограничителями (, ), ;.
+<p align="center">
+    <img width="448" height="92" alt="image" src="https://github.com/user-attachments/assets/b2e05c06-1387-419e-b7eb-6846b0446bbd" />
+</p>
 
 **Метод анализа**
 
@@ -305,7 +308,7 @@ A → α
 **Схема метода анализа**
 
 <p align="center">
-  <img width="909" height="505" alt="gramatikAta" src="https://github.com/user-attachments/assets/ca7f35ae-e242-4ca8-aff0-75011578c185" />
+  <img width="909" height="505" alt="gramatikAta1" src="https://github.com/user-attachments/assets/bf72c2a8-75c2-4289-abc6-261080dce082" />
 </p>
 
 **Диагностика и нейтрализация синтаксических ошибок**
