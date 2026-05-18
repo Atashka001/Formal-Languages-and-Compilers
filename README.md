@@ -728,14 +728,53 @@ EnumValueListNode - Представляет список элементов п�
 
 Работа с AST
 
+<img width="1362" height="865" alt="ast" src="https://github.com/user-attachments/assets/4b721677-30e8-4d00-bb69-8e95595b1011" />
 
 Генерация LLVM IR
 
+<img width="1898" height="1138" alt="llvm ir" src="https://github.com/user-attachments/assets/78329e14-2b06-43d9-b678-79c8b798c374" />
 
 Оптимизация IR
 
+<img width="1898" height="1138" alt="optim ir" src="https://github.com/user-attachments/assets/6ae344df-cb39-4ad4-b6fe-dc85b05e8e30" />
 
-Построение CFG
+Построение CFG<img width="1303" height="890" alt="ast" src="https://github.com/user-attachments/assets/ef68b0a9-2a33-4d22-b51c-9d39445e364a" />
 
 
-Индивидуальное задание
+<img width="660" height="144" alt="gfc" src="https://github.com/user-attachments/assets/43d99898-027e-4eb4-8bdc-82070640eaed" />
+
+<img width="285" height="124" alt="gfc2" src="https://github.com/user-attachments/assets/b76826c4-636e-4034-9a8a-ce9963b3686c" />
+
+**Индивидуальное задание**
+
+Перечисление
+
+Пример:
+
+```
+enum Color { RED, GREEN, BLUE };
+
+int main() {
+    enum Color c = GREEN;
+    int val = c + 10;
+    return val;
+}
+
+```
+
+AST
+
+<img width="1303" height="890" alt="ast" src="https://github.com/user-attachments/assets/bad7ebca-78b5-423d-a195-5025c72b802b" />
+
+LLVM IR
+
+<img width="1297" height="881" alt="IRO0" src="https://github.com/user-attachments/assets/0d32284c-e5cb-465d-a8d2-459eb06555dc" />
+
+<img width="1306" height="889" alt="IRO2" src="https://github.com/user-attachments/assets/21c4c276-76dd-4f18-814d-161f3fd7b447" />
+
+CFG
+
+<img width="255" height="93" alt="cfg_main" src="https://github.com/user-attachments/assets/35ad785c-926b-4a38-9875-29aac66a03b2" />
+
+
+
