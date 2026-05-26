@@ -709,6 +709,78 @@ EnumValueListNode - Представляет список элементов п�
 4. Для просмотра AST выбрать пункт меню "AST".
 5. Для возврата к таблице ошибок выбрать пункт меню "Ошибки".
 
+## Лабораторная работа 6. Создание внутренней формы представления программы
+
+**Вариант задания 8 Арифметические выражения (на базе Pascal-подобного синтаксиса)**
+
+**Полное определение КС-грамматики:**
+
+```
+E → TA
+A → ε | + TA | - TA
+T → FB
+B → ε | * FB | / FB
+F → num | id | (E)
+id → letter {letter | digit}
+num → digit {digit}
+```
+
+Где:
+
+num — целое число (последовательность цифр)
+
+id — идентификатор (буква или подчёркивание, затем буквы, цифры или подчёркивания)
+
+**Примеры верных строк:**
+
+```
+3 + 2 * 5
+
+1+1
+
+((2 - 4) + 10)
+
+(1 + 2) * 3
+```
+
+**Диаграмма лексера**
+
+<p align="center">
+    <img width="351" height="823" alt="СхемаАлексер" src="https://github.com/user-attachments/assets/74b7961c-c302-4fff-8122-f1fa5d089180" />
+</p>
+
+**Схема рекурсивного спуска для парсера**
+
+<p align="center">
+    <img width="481" height="151" alt="СхемаАпарсер" src="https://github.com/user-attachments/assets/07258fd4-efae-4b4e-902d-e30dcd1c32ca" />
+</p>
+
+**Скриншоты работы программы**
+
+<p align="center">
+    <img width="911" height="620" alt="image" src="https://github.com/user-attachments/assets/8c5c1033-19e5-4c9b-9e40-32736b3cf95f" />
+</p>
+
+<p align="center">
+    <img width="993" height="812" alt="image" src="https://github.com/user-attachments/assets/c24a092f-ee56-403a-aa75-001e74184f41" />
+</p>
+
+<p align="center">
+    <img width="975" height="487" alt="image" src="https://github.com/user-attachments/assets/c247feb7-328b-415a-8f0a-01e95d6f2c20" />
+</p>
+
+**Таблица тетрад**
+
+<p align="center">
+    <img width="244" height="144" alt="image" src="https://github.com/user-attachments/assets/70e10730-a88e-4b27-89c6-bd3b8d4888dc" />
+</p>
+
+**ПОЛИЗ**
+
+<p align="center">
+    <img width="258" height="82" alt="image" src="https://github.com/user-attachments/assets/6dc2921f-8fa7-42a7-937c-44db66e33333" />
+</p>
+
 ## Лабораторная работа 7. Анализ и преобразование кода с использованием Clang и LLVM
 
 <img width="1362" height="865" alt="ast" src="https://github.com/user-attachments/assets/8f9277ee-6e0d-4a51-b4fc-ed39c661175c" />
